@@ -5,13 +5,63 @@ Lab work for Micro 2. Group work. Labs are in separate folders. Make use of test
 ***********************************************
 GROUP WORK TODOS-
 
-Build circuit
 
-Define the required states
+BUILD CIRCUIT
+    
+    Hardware Design on lab report
+        Schematic
+        Explain circuit
 
-Identify triggers for state transitions
+DESIGN STATE MACHINE
 
-Define state transitions
+    Define the required states
+
+        FILL OUT REQUIRED STATES HERE
+    
+    Identify events for state transitions
+
+        FILL OUT STATE TRANSITION EVENTS HERE
+    
+    Define state transitions
+
+        DEFINE STATE TRANSITIONS HERE
+
+SOFTWARE DESIGN
+
+    Design principle
+    
+    Major elements of design
+        State Machines used
+        Pin assignments
+    
+    Software flowchart
+
+    Important design considerations
+
+GATHER RESULTS
+
+    Screenshots of lab
+    Charts displaying testing results
+
+PROBLEMS ENCOUNTERED AND SOLVED
+
+    Document any problems that come up while doing lab
+    Explain how the group solved them
+    Debugging
+
+PERSONAL CONTRIBUTIONS
+    
+    Identify technical contributions made with specific details
+        Record contributions in a specified area
+
+LESSONS LEARNT:
+
+    Summarize what was learnt
+        Be specific
+
+
+After all above to-dos are complete, write lab report.
+
 *************************************************
 *************************************************
 
