@@ -20,7 +20,7 @@ DESIGN STATE MACHINE
     
     Identify events for state transitions
 
-        FILL OUT STATE TRANSITION EVENTS HERE
+        FILL OUT STATE TRANSITION EVENTS HERE 
     
     Define state transitions
 
