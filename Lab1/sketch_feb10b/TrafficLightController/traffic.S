@@ -1,5 +1,11 @@
-#define __SFR_OFFSET 0x00
-#include "avr/io.h"
+; traffic.S
+; Low-level GPIO control for LEDs and buzzer
+; Arduino Nano (ATmega328P)
+
+; D2 = PD2
+; D3 = PD3
+; D4 = PD4
+; D13 = PB5
 
 .global gpio_init
 .global red_on
@@ -11,31 +17,65 @@
 .global buzzer_on
 .global buzzer_off
 
-.section .text
-
+; *******************************************
+; gpio_init
+; Configures LED and buzzer pins as outputs.
+; Called once in setup().
+; *******************************************
 gpio_init:
-  SBI DDRD, 2      ; D2 red
-  SBI DDRD, 3      ; D3 green
-  SBI DDRD, 4      ; D4 yellow
-  SBI DDRB, 5      ; D13 buzzer
-  RET
+    ; Set PD2, PD3, PD4 as outputs (Red, Green, Yellow)
+    ldi r16, (1<<DDD2)|(1<<DDD3)|(1<<DDD4)
+    out DDRD, r16
 
-red_on:    SBI PORTD, 2 ; D2
-           RET
-red_off:   CBI PORTD, 2
-           RET
+    ; Set PB5 as output (Buzzer)
+    sbi DDRB, DDB5
 
-green_on:  SBI PORTD, 3 ; D3
-           RET
-green_off: CBI PORTD, 3
-           RET
+    ret
 
-yellow_on: SBI PORTD, 4 ; D4
-           RET
-yellow_off:CBI PORTD, 4
-           RET
 
-buzzer_on: SBI PORTB, 5 ; D13
-           RET
-buzzer_off:CBI PORTB, 5
-           RET
+; *******************************************
+; RED LED
+; *******************************************
+red_on:
+    sbi PORTD, PD2   ; Set PD2 HIGH
+    ret
+
+red_off:
+    cbi PORTD, PD2   ; Set PD2 LOW
+    ret
+
+
+; *******************************************
+; GREEN LED
+; *******************************************
+green_on:
+    sbi PORTD, PD3
+    ret
+
+green_off:
+    cbi PORTD, PD3
+    ret
+
+
+; *******************************************
+; YELLOW LED
+; *******************************************
+yellow_on:
+    sbi PORTD, PD4
+    ret
+
+yellow_off:
+    cbi PORTD, PD4
+    ret
+
+
+; *******************************************
+; BUZZER (D13 / PB5)
+; *******************************************
+buzzer_on:
+    sbi PORTB, PB5
+    ret
+
+buzzer_off:
+    cbi PORTB, PB5
+    ret
