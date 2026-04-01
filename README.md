@@ -1,155 +1,103 @@
-# Microprocessors-and-Embedded-Systems-2-Labs
-Lab work for Micro 2. Group work. Labs are in separate folders. Make use of test branches.
+Lab 2 – MPU-6050 IMU Data Acquisition and Processing
 
-***********************************************
-***********************************************
-GROUP WORK TODOS-
+Overview
 
+In this lab you will build a complete pipeline for acquiring, processing, and visualizing data from the MPU-6050 6-axis IMU (accelerometer + gyroscope).
 
-BUILD CIRCUIT
-    
-    Hardware Design on lab report
-        Schematic
-        Explain circuit
+You will work through Steps 1–5, progressively implementing the core algorithms. Step 7 is a provided demonstration — run it and explore, no coding required.
 
-DESIGN STATE MACHINE
+Hardware
+Arduino Mega 2560
+MPU-6050 breakout board
+USB cable + jumper wires
 
-    Define the required states
+Wiring:
 
-        FILL OUT REQUIRED STATES HERE
-    
-    Identify events for state transitions
+MPU-6050	Arduino Mega
+VCC	5 V
+GND	GND
+SDA	Pin 20
+SCL	Pin 21
+AD0	GND
+Setup
+1. Flash the Arduino
 
-        FILL OUT STATE TRANSITION EVENTS HERE 
-    
-    Define state transitions
+Open arduino/imu_stream/imu_stream.ino in the Arduino IDE and flash it to the Arduino Mega.
 
-        DEFINE STATE TRANSITIONS HERE
+2. Create a Python virtual environment
 
-SOFTWARE DESIGN
+macOS / Linux
 
-    Design principle
-    
-    Major elements of design
-        State Machines used
-        Pin assignments
-    
-    Software flowchart
+cd python
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 
-    Important design considerations
+Windows (PowerShell)
 
-GATHER RESULTS
+cd python
+python -m venv venv
+venv\Scripts\Activate.ps1
+pip install -r requirements.txt
 
-    Screenshots of lab
-    Charts displaying testing results
+Re-activate the venv (source venv/bin/activate) each time you open a new terminal.
 
-PROBLEMS ENCOUNTERED AND SOLVED
+3. Test without hardware (simulator mode)
+python step1_stream.py --simulate
+Lab Steps
+Step	Script	Who	Status
+1 — Raw Streaming & Logging	step1_stream.py	All	Provided
+2 — Real-Time 6-Axis Plot	step2_live_plot.py	All	Provided
+3 — Accel Roll & Pitch	step3_accel_angles.py	All	TODO
+4 — Gyro Integration	step4_gyro_integrate.py	All	TODO
+5 — Complementary Filter	step5_comp_filter.py	All	TODO
+7 — 3D Viz + Marble Madness	step7_3d_viz.py	All (demo)	Provided
+What to Implement
 
-    Document any problems that come up while doing lab
-    Explain how the group solved them
-    Debugging
+Search each file for TODO markers:
 
-PERSONAL CONTRIBUTIONS
-    
-    Identify technical contributions made with specific details
-        Record contributions in a specified area
+File	What to implement
+arduino/imu_stream/imu_stream.ino	writeRegister(), readRegister(), and the I2C burst-read + byte-combine + unit-convert sections of readAndSendIMU()
+python/step3_accel_angles.py	accel_angles() — gravity-projection formulas for roll & pitch
+python/step4_gyro_integrate.py	GyroIntegrator.update() — angle += gyro_rate × dt
+python/step5_comp_filter.py	ComplementaryFilter.update() — fuse accel and gyro with α coefficient
 
-LESSONS LEARNT:
+Ignore Step 6 — you are not EECE 5520.
 
-    Summarize what was learnt
-        Be specific
+All other code (serial handshake, threading, plotting, rendering) is fully provided.
 
+Running Steps 1–5
+# Hardware (auto-detect port)
+python step3_accel_angles.py
 
-After all above to-dos are complete, write lab report.
+# Specify port explicitly
+python step3_accel_angles.py --port /dev/tty.usbmodem1101   # macOS
+python step3_accel_angles.py --port COM3                     # Windows
 
-*************************************************
-*************************************************
+# Simulator (no Arduino needed)
+python step3_accel_angles.py --simulate
+Running Step 7 (provided demo)
+python step7_3d_viz.py --simulate
 
+Controls: drag the 3D panel to orbit the camera · V = reset view · R = restart game · ESC = quit
 
-LAB REQUIREMENTS:
+Provided Files (do not modify)
+File	Description
+python/imu_reader.py	Serial driver + simulator — fully provided
+python/step1_stream.py	Raw data streaming + CSV logger
+python/step2_live_plot.py	Real-time 6-axis plot
+python/step7_3d_viz.py	3D orientation viewer + Marble Madness game
+Files With TODOs
+File	What to implement
+arduino/imu_stream/imu_stream.ino	I2C register read/write + 14-byte burst read
+python/step3_accel_angles.py	accel_angles()
+python/step4_gyro_integrate.py	GyroIntegrator.update()
+python/step5_comp_filter.py	ComplementaryFilter.update()
+Deliverables
 
+Submit on Blackboard:
 
-This lab is to design a controller for traffic lights that face one traffic direction. There are three
-lights: Red, Yellow, Green, which can be represented with LEDs of respective color.
-The traffic lights operate in the following patterns:
+GitHub repository link — your fork/clone with all steps implemented
+PDF report — answers to all lab questions + required plots
 
-
-(1) At the start of the system (power up), the Red light flashes (1-second on then 1-second
-off) until the duration of both Red and Green lights are set (see (2)) AND “*” key is
-pressed once (see (3)).
-
-
-(2) Use the 16-button keypad to set the duration of Red and Green lights. For example,
-pressing a sequence of “A”-“2”-“4”-“#” will set the Red light to stay on for 24 seconds.
-Similarly, pressing a sequence of “B”-“2”-“0”-“#” will set the Green light to stay on for 20
-seconds. Yellow light is on for 3 seconds and no need to change that
-
-
-(3) After setting the light durations, press “*” key to start the operation of the traffic lights.
-
-
-(4) The Red light stays on for 24 seconds (or X seconds based on the keypad inputs) before
-the Green light is turned on. During the last three seconds, flash the Red light (0.5
-second on then 0.5 second off repeatedly)
-
-
-(5) The Green light stays on for 20 seconds (or X seconds based on the keypad inputs)
-before switching the Yellow light on. During the last three seconds, flash the Green light
-(0.5 second on then 0.5 second off repeatedly)
-
-
-(6) The Yellow light stays on for 3 seconds before switching back to Red light. No need to
-flash.
-
-
-(7) The R-G-Y pattern continues until the system is powered off
-
-
-(8) An active buzzer beeps for 3 seconds before a light is changed.
-
-
-(9) Press “#” on the keypad twice to switch from the normal operation mode to “failure”
-mode, where Red light flashes (0.5 second on then 0.5 second off) repeatedly, until
-power resets or keypad inputs set the Green/Red duration (see (2)) again.
-
-***************************************************************************************************************************
-***************************************************************************************************************************
-
-STEPS FOR LAB:
-
-Step 1:
-You can first check the resource files under the following folders
-2.1 LED
-2.3 Digital Inputs
-2.5 Active Buzzer
-
-These folders contain useful instructions on hardware wiring and sample code to drive these
-components. You are strongly suggested to run these examples on your Arduino kit, and build
-on them to implement Lab 1.
-
-
-Step 2:
-Using what you learn from Step 1, wire up the Arduino with other components on your
-breadboard. Double check the wiring and basic sample code to make sure you can (a) turn
-on/off LED (b) detect input from a switch (c) make beep sound with the active buzzer (d) make a
-“clock” variable that counts down on every second
-
-
-Step 3:
-You will then need to design a state machine to implement the control logic on the rotating
-pattern of traffic lights. The example 3.9 on page 62 of the textbook shows a traffic light control
-at a pedestrian crosswalk. You can refer to that as a starting point to design yours for Lab 1.
-
-
-Step 4:
-Based on step 3, Implement the necessary code to represent the states and drive the state
-transitions
-
-
-Step 5:
-Test and debug your design.
-
-
-Step 6:
-Push your source code to a private github repository
-Optionally record demo video and post it on Youtube.
+See docs/lab-writeup.md for full assignment details.
