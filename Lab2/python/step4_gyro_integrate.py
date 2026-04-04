@@ -171,9 +171,13 @@ class GyroIntegrator:
         # Apply this to both self.roll (using gx) and self.pitch (using gy).
         # Then return (self.roll, self.pitch).
         # ──────────────────────────────────────────────────────────────────
-        raise NotImplementedError("TODO Step 4: implement gyro integration")
+        
+        self.roll += gx * dt
+        self.pitch += gy * dt
 
+        return self.roll, self.pitch
 
+ 
 # =============================================================================
 # DataBuffer
 # =============================================================================

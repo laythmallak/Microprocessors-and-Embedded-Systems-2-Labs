@@ -29,7 +29,7 @@
  * with a START condition and ends with a STOP condition.
  *
  * Register WRITE (set a configuration register):
- *   [START] → [device addr + W] → [register addr] → [data byte] → [STOP]
+ *   [START] → [device addr + W] → [register addr] → [data byte] → [STOP] 
  *
  * Register READ (read back a value):
  *   [START] → [device addr + W] → [register addr] → [repeated START]
@@ -308,15 +308,55 @@ uint8_t readRegister(uint8_t reg) {
 // =============================================================================
 void readAndSendIMU() {
   // TODO Part A: burst-read 14 bytes via I2C (see instructions above)
+  
+  Wire.beginTransmission(MPU6050_ADDR); 
+ 
+  Wire.write(REG_ACCEL_XOUT_H);
+ 
+  Wire.endTransmission(false);
+
+  Wire.requestFrom((uint8_t)MPU6050_ADDR, (uint8_t)14, (uint8_t)true);
+
+  if (Wire.available() < 14) return;
+
+  uint8_t buf[14];
+  for (int i = 0; i < 14; i++) { buf[i] = Wire.read(); }
 
   // TODO Part B: combine high/low bytes into int16_t raw values
 
+  int16_t rawAX = (int16_t)((buf[0] << 8) | buf[1]);
+  int16_t rawAY = (int16_t)((buf[2] << 8) | buf[3]);
+  int16_t rawAZ = (int16_t)((buf[4] << 8) | buf[5]);
+  // skip 6 and 7
+  int16_t rawGX = (int16_t)((buf[8] << 8) | buf[9]);
+  int16_t rawGY = (int16_t)((buf[10] << 8) | buf[11]);
+  int16_t rawGZ = (int16_t)((buf[12] << 8) | buf[13]);
+
   // TODO Part C: convert raw values to physical units (float ax, ay, az, gx, gy, gz)
+  
+  float ax = rawAX / ACCEL_SENSITIVITY;  // units: g
+  float ay = rawAY / ACCEL_SENSITIVITY;
+  float az = rawAZ / ACCEL_SENSITIVITY;
+
+  float gx = rawGX / GYRO_SENSITIVITY;   // units: °/s
+  float gy = rawGY / GYRO_SENSITIVITY;
+  float gz = rawGZ / GYRO_SENSITIVITY;
 
   // TODO Part D: Serial output 
   // Emits one CSV line: timestamp_ms,ax,ay,az,gx,gy,gz
+
   Serial.print(millis());
   Serial.print(',');
   Serial.print(ax, 4);
-  //...
+  Serial.print(',');
+  Serial.print(ay, 4);
+  Serial.print(',');
+  Serial.print(az, 4);
+  Serial.print(',');
+  Serial.print(gx, 4);
+  Serial.print(',');
+  Serial.print(gy, 4);
+  Serial.print(',');
+  Serial.println(gz, 4);
+  
 }

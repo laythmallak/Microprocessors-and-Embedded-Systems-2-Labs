@@ -112,7 +112,10 @@ def accel_angles(ax: float, ay: float, az: float) -> tuple:
     #
     # Use math.atan2() and math.degrees() to return values in degrees.
     # ──────────────────────────────────────────────────────────────────────
-    raise NotImplementedError("TODO Step 3: implement accel_angles()")
+    roll = math.degrees(math.atan2(ay, az))
+    pitch = math.degrees(math.atan2(-ax, math.sqrt(ay**2 + az**2)))
+
+    return roll, pitch
 
 
 # =============================================================================

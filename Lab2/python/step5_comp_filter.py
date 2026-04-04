@@ -63,7 +63,7 @@ for _backend in (["MacOSX"] if _sys.platform == "darwin" else []) + ["Qt5Agg", "
 
 # ─── Tunable Constants ────────────────────────────────────────────────────────
 # Change ALPHA to experiment with the filter behaviour.
-ALPHA: float = 0.98              # complementary filter coefficient [0, 1]
+ALPHA: float = 0.80             # complementary filter coefficient [0, 1]
 
 # ─── Display Constants ────────────────────────────────────────────────────────
 BUFFER_SIZE: int = 200            # ~4 seconds at 50 Hz
@@ -182,7 +182,12 @@ class ComplementaryFilter:
         #
         # Update self.roll and self.pitch, then return (self.roll, self.pitch).
         # ──────────────────────────────────────────────────────────────────
-        raise NotImplementedError("TODO Step 5: implement complementary filter update")
+        
+        self.roll = self.alpha * (self.roll + gx * dt) + (1 - self.alpha) * a_roll
+        self.pitch = self.alpha * (self.pitch + gy * dt) + (1 - self.alpha) * a_pitch
+
+        return self.roll, self.pitch
+
 
 
 # =============================================================================
